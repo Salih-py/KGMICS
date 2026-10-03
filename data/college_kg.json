@@ -1,0 +1,91 @@
+{
+  "courses": {
+    "BA Functional English": {
+      "core_skills": ["Content Writing", "Copywriting", "Linguistics", "Corporate Communications", "Editing", "Public Relations", "Critical Reading"],
+      "careers": ["Content Strategist", "Technical Writer", "Public Relations Specialist", "Corporate Communications Lead", "Copywriter", "Digital Journalist"]
+    },
+    "BA Social Science-Economics": {
+      "core_skills": ["Microeconomics", "Macroeconomics", "Econometrics", "Statistical Analysis", "Public Policy", "Financial Modeling", "Market Research"],
+      "careers": ["Economic Analyst", "Policy Researcher", "Market Risk Analyst", "Financial Consultant", "Data Journalist", "Development Officer"]
+    },
+    "BCom": {
+      "core_skills": ["Financial Accounting", "Corporate Taxation", "Auditing", "Cost Accounting", "Tally & ERP", "Banking Operations", "Investment Analysis"],
+      "careers": ["Chartered Accountant Trainee", "Financial Analyst", "Tax Consultant", "Audit Associate", "Investment Banker", "Commercial Banker"]
+    },
+    "BSc Chemistry": {
+      "core_skills": ["Organic Chemistry", "Analytical Chemistry", "Spectroscopy", "Chromatography", "Lab Safety & Quality Control", "Wet Chemistry", "Formulation"],
+      "careers": ["Quality Control Chemist", "Pharmaceutical Formulation Scientist", "Analytical Chemist", "Chemical Safety Specialist", "R&D Chemist"]
+    },
+    "BSc Computer Science": {
+      "core_skills": ["Data Structures", "Algorithms", "Python", "SQL", "Web Development", "Object Oriented Programming", "Git", "Computer Networks"],
+      "careers": ["Full Stack Developer", "Software Engineer", "Backend Developer", "Database Administrator", "DevOps Engineer", "Cloud Engineer"]
+    },
+    "BSc Data Science & Logistics": {
+      "core_skills": ["Python", "Supply Chain Analytics", "Predictive Modeling", "SQL", "Tableau & PowerBI", "Operations Research", "Warehouse Optimization"],
+      "careers": ["Logistics Analyst", "Supply Chain Data Scientist", "Operations Analyst", "Business Intelligence Developer", "Inventory Planning Specialist"]
+    },
+    "BSc Physics": {
+      "core_skills": ["Mathematical Physics", "Thermodynamics", "Electromagnetism", "Computational Physics", "Data Modeling", "Quantum Mechanics", "Instrumentation"],
+      "careers": ["Applied Physicist", "Optical Systems Engineer", "Acoustics Specialist", "Scientific Programmer", "Semiconductor Quality Analyst"]
+    },
+    "BSc Mathematics": {
+      "core_skills": ["Calculus", "Linear Algebra", "Probability Theory", "Discrete Mathematics", "Numerical Methods", "Python", "Operations Research"],
+      "careers": ["Quantitative Analyst", "Actuarial Associate", "Operations Research Analyst", "Statistical Programmer", "Data Scientist"]
+    },
+    "BSc Zoology": {
+      "core_skills": ["Cell Biology", "Animal Physiology", "Ecological Sampling", "Biostatistics", "Microscopy", "Genetics", "Wildlife Conservation"],
+      "careers": ["Wildlife Biologist", "Ecological Consultant", "Clinical Lab Technologist", "Zoological Researcher", "Environmental Impact Assessor"]
+    },
+    "MSc Computer Science": {
+      "core_skills": ["Machine Learning", "Distributed Systems", "Advanced Algorithms", "Deep Learning", "Cloud Architecture", "Natural Language Processing", "Microservices"],
+      "careers": ["Machine Learning Engineer", "AI Solutions Architect", "Distributed Systems Engineer", "Data Engineer", "Senior Software Architect"]
+    },
+    "MSc Mathematics": {
+      "core_skills": ["Stochastic Processes", "Topology", "Measure Theory", "Cryptographic Algorithms", "High-Dimensional Data Analysis", "Advanced Optimization"],
+      "careers": ["Senior Quantitative Trader", "Cryptographic Analyst", "Algorithmic Research Scientist", "Risk Management Lead", "Lead Data Scientist"]
+    },
+    "PhD Computer Science": {
+      "core_skills": ["Research Methodology", "Advanced Machine Learning Theory", "Peer-Reviewed Publishing", "Experimental Architecture", "Grant Writing", "Specialized AI Systems"],
+      "careers": ["Principal AI Scientist", "University Professor", "R&D Research Director", "Chief Technology Officer", "Postdoctoral Fellow"]
+    },
+    "PhD Mathematics": {
+      "core_skills": ["Pure Mathematics Proofs", "Applied Mathematical Modeling", "Scientific Publishing", "Complex Systems Analysis", "Stochastic Calculus"],
+      "careers": ["Principal Quantitative Researcher", "Academic Professor", "Defense Research Scientist", "Cryptographic Scientist"]
+    },
+    "PhD Zoology": {
+      "core_skills": ["Advanced Evolutionary Biology", "Field Research Leadership", "Ecological Genomics", "Bioinformatics", "Scientific Grant Management"],
+      "careers": ["Lead Conservation Scientist", "Senior Environmental Advisor", "University Professor", "Biomedical Research Fellow"]
+    }
+  },
+  "career_requirements": {
+    "Quality Control Chemist": ["Analytical Chemistry", "Chromatography", "Spectroscopy", "Lab Safety & Quality Control", "Wet Chemistry", "GMP Regulations"],
+    "Pharmaceutical Formulation Scientist": ["Organic Chemistry", "Formulation", "Wet Chemistry", "Analytical Chemistry", "Drug Delivery", "Lab Safety & Quality Control"],
+    "Analytical Chemist": ["Spectroscopy", "Chromatography", "Analytical Chemistry", "Instrumentation", "Calibration Protocols", "Data Modeling"],
+    "Chemical Safety Specialist": ["Lab Safety & Quality Control", "Chemical Waste Management", "Regulatory Compliance", "Risk Assessment", "Organic Chemistry"],
+    "R&D Chemist": ["Organic Chemistry", "Formulation", "Spectroscopy", "Synthesis Planning", "Literature Review", "Analytical Chemistry"],
+    "Content Strategist": ["Content Writing", "Copywriting", "SEO Optimization", "Corporate Communications", "Editing", "Social Media Strategy"],
+    "Technical Writer": ["Content Writing", "Documentation Tools", "Editing", "API Basics", "Critical Reading", "Linguistics"],
+    "Public Relations Specialist": ["Corporate Communications", "Public Relations", "Press Release Drafting", "Media Outreach", "Copywriting"],
+    "Corporate Communications Lead": ["Corporate Communications", "Strategic Messaging", "Public Relations", "Crisis Communication", "Editing"],
+    "Economic Analyst": ["Microeconomics", "Macroeconomics", "Econometrics", "Statistical Analysis", "Data Cleaning", "Policy Research"],
+    "Policy Researcher": ["Public Policy", "Econometrics", "Microeconomics", "Qualitative Analysis", "Report Drafting"],
+    "Market Risk Analyst": ["Financial Modeling", "Macroeconomics", "Statistical Analysis", "Probability Theory", "Risk Mitigation"],
+    "Chartered Accountant Trainee": ["Financial Accounting", "Corporate Taxation", "Auditing", "Cost Accounting", "Statutory Compliance"],
+    "Financial Analyst": ["Financial Accounting", "Corporate Taxation", "Financial Modeling", "Auditing", "Excel", "Investment Analysis"],
+    "Tax Consultant": ["Corporate Taxation", "Direct Tax Laws", "GST Compliance", "Financial Accounting", "Audit Preparation"],
+    "Audit Associate": ["Auditing", "Internal Controls", "Financial Accounting", "Sampling Techniques", "Documentation"],
+    "Full Stack Developer": ["HTML/CSS", "JavaScript", "React or Vue", "Python", "SQL", "REST APIs", "Git"],
+    "Software Engineer": ["Data Structures", "Algorithms", "Object Oriented Programming", "Git", "Testing & Debugging", "SQL"],
+    "Machine Learning Engineer": ["Python", "Linear Algebra", "Machine Learning", "Deep Learning", "PyTorch or TensorFlow", "Model Deployment", "SQL"],
+    "Data Scientist": ["Python", "SQL", "Probability Theory", "Linear Algebra", "Predictive Modeling", "Data Cleaning", "Tableau & PowerBI"],
+    "Logistics Analyst": ["Supply Chain Analytics", "SQL", "Warehouse Optimization", "Excel", "Operations Research", "Forecasting"],
+    "Supply Chain Data Scientist": ["Supply Chain Analytics", "Predictive Modeling", "Python", "Operations Research", "SQL", "Dashboarding"],
+    "Quantitative Analyst": ["Calculus", "Linear Algebra", "Probability Theory", "Python", "Financial Modeling", "Time Series Analysis"],
+    "Applied Physicist": ["Mathematical Physics", "Instrumentation", "Thermodynamics", "Computational Physics", "Data Modeling"],
+    "Optical Systems Engineer": ["Electromagnetism", "Optical Testing", "Instrumentation", "Mathematical Physics", "CAD Tools"],
+    "Wildlife Biologist": ["Animal Physiology", "Ecological Sampling", "Biostatistics", "Field Research", "Microscopy", "GIS Basics"],
+    "Ecological Consultant": ["Ecological Sampling", "Environmental Impact Assessor", "Biostatistics", "Wildlife Conservation", "Regulatory Knowledge"],
+    "Principal AI Scientist": ["Research Methodology", "Advanced Machine Learning Theory", "Peer-Reviewed Publishing", "Deep Learning", "Experimental Architecture"],
+    "Principal Quantitative Researcher": ["Pure Mathematics Proofs", "Applied Mathematical Modeling", "Stochastic Calculus", "Complex Systems Analysis", "Scientific Publishing"]
+  }
+}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}KGIMCS — Career Intelligence & Placement Portal{% endblock %}
+
+{% block content %}
+<section class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <!-- Hero Header -->
+    <div class="text-center max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-4">
+            Research-Backed Model • GCN + GMF Fusion Architecture
+        </span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Scientific Career Planning & Placement Readiness for College Students
+        </h1>
+        <p class="mt-5 text-base md:text-lg text-slate-600 leading-relaxed">
+            Overcoming cold-start and sparse-profile hurdles across 14 university streams using a deep Knowledge Graph Convolutional network.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="{{ url_for('signup') }}" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 transition">
+                Create Student Account
+            </a>
+            <a href="{{ url_for('signin') }}" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-white text-slate-700 font-medium border border-slate-300 hover:bg-slate-50 transition">
+                Student Login
+            </a>
+        </div>
+    </div>
+
+    <!-- 5 Core Pillars Grid -->
+    <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">1</div>
+            <h2 class="text-lg font-bold text-slate-800">Dynamic NLP Profiling</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-normal">
+                Type your bio naturally with dynamic suggestions. The engine maps free text to structured career competencies.
+            </p>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">2</div>
+            <h2 class="text-lg font-bold text-slate-800">KGIMCS Career Engine</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-normal">
+                Dual-stream matrix factorization and graph convolution computes precise career paths with full traceability.
+            </p>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">3</div>
+            <h2 class="text-lg font-bold text-slate-800">Skill Gap Diagnosis</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-normal">
+                Identifies missing prerequisite skills directly against target industry and academic standards.
+            </p>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">4</div>
+            <h2 class="text-lg font-bold text-slate-800">Indian Job Discovery</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-normal">
+                Verified Indian fresher & graduate job postings filtered by your recommended career match.
+            </p>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">5</div>
+            <h2 class="text-lg font-bold text-slate-800">ATS Smart Resume</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-normal">
+                Automated single-column ATS-friendly resume export with real-time target keyword scoring.
+            </p>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-200 transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">6</div>
+            <h2 class="text-lg font-bold text-slate-800">14 College Streams</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-normal">
+                Customized for UG (4-year), PG (2-year), and PhD tracks across Arts, Commerce, and Sciences.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — KGIMCS AI Career Intelligence{% endblock %}
+
+{% block content %}
+<div class="py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
+
+    <!-- Top: Student Profile Header -->
+    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                Student Profile Active
+            </span>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 tracking-tight">Welcome, {{ user.full_name }}</h1>
+            <p class="text-sm text-slate-500 mt-1">
+                Programme: <strong class="text-slate-800">{{ user.course_name }}</strong> ({{ user.course_category }}) • Passout: <strong class="text-slate-800">{{ user.passout_year }}</strong>
+                {% if user.interested_career %}
+                    • Prior Interest: <strong class="text-indigo-600">{{ user.interested_career }}</strong>
+                {% endif %}
+            </p>
+        </div>
+        <div>
+            <span class="px-3.5 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-xl flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                KGIMCS Fusion Engine v1.0
+            </span>
+        </div>
+    </div>
+
+    <!-- SECTION 1: Full-Width Student Bio Editor -->
+    <section class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-2">
+            <div>
+                <h2 class="text-lg font-black text-slate-900 tracking-tight">Student Bio & Career Aspirations</h2>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    Provide a detailed summary of your skills, coursework, practical projects, and career interests.
+                </p>
+            </div>
+            <button id="suggest-phrase-btn" type="button" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg border border-indigo-100 self-start sm:self-auto transition">
+                ⚡ Autofill Template
+            </button>
+        </div>
+
+        <!-- Clean, Single-Layer Textarea with Comprehensive Guided Placeholder -->
+        <div class="mt-5">
+            <textarea id="bio-textarea" rows="7"
+                class="w-full p-4 text-sm leading-relaxed border border-slate-300 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition bg-white text-slate-800 font-sans shadow-inner placeholder:text-slate-400 placeholder:italic placeholder:font-normal"
+                placeholder="Hello, my name is {{ user.full_name }}. I have completed {{ user.course_name }} from our college. I have a strong interest in [Area of Interest] and have developed skills in [Skill 1], [Skill 2], [Skill 3], and [Skill 4] during my studies. I am a hardworking and curious person with good communication, analytical thinking, and problem-solving skills. I also have experience or knowledge in [Project / Internship / Software / Laboratory / Technical Skill]. My goal is to [Career Goal / Future Goal], and I am always interested in learning new skills and improving myself.">{{ profile.bio_text if profile else '' }}</textarea>
+        </div>
+
+        <!-- Center Submit Button -->
+        <div class="mt-6 flex justify-center">
+            <button id="suggest-btn" class="w-full sm:w-80 py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-2xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2">
+                <span id="btn-text">Run KGIMCS Career Analysis</span>
+            </button>
+        </div>
+    </section>
+    <!-- PROCESSING ANIMATION (Hidden by default) -->
+    <div id="loading-state" class="hidden p-12 bg-white rounded-3xl border border-slate-200/80 shadow-sm text-center space-y-4">
+        <div class="relative w-16 h-16 mx-auto">
+            <div class="w-16 h-16 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-xs font-black text-indigo-600">AI</div>
+        </div>
+        <h3 class="text-base font-bold text-slate-800">Processing Knowledge Graph & Neural Embeddings...</h3>
+        <p class="text-xs text-slate-500 max-w-md mx-auto">
+            Parsing bio entities, mapping 1-hop and 2-hop curriculum connections, and computing dual GMF + GCN fusion[cite: 3, 10, 11, 14].
+        </p>
+    </div>
+
+    <!-- SECTION 2: AI Recommended Careers (Hidden until processed) -->
+    <section id="recs-section" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">AI Recommended Careers</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Top 5 logically matching career trajectories computed by KGIMCS[cite: 3, 14]</p>
+            </div>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ranked 1 to 5</span>
+        </div>
+
+        <!-- Container where Top 1 Hero + Ranks 2-5 will render -->
+        <div id="recs-container" class="space-y-6"></div>
+    </section>
+
+    <!-- SECTION 3: AI Model Performance & Scientific Calculation Card (Cleaned & Explanatory) -->
+    <section id="metrics-section" class="hidden bg-slate-900 text-white p-7 sm:p-9 rounded-3xl shadow-xl border border-slate-800 space-y-6">
+        <div class="border-b border-slate-800 pb-4">
+            <span class="px-3 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 text-[11px] font-bold uppercase tracking-wider rounded-md">
+                Model Evaluation Summary
+            </span>
+            <h3 class="text-lg font-black mt-2 tracking-tight">KGIMCS Recommendation Metrics</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Performance benchmarks achieved on your profile through hybrid matrix factorization and graph convolution[cite: 3, 15, 17, 20].</p>
+        </div>
+
+        <!-- 6 Metrics with Clear Explanatory Descriptions -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3.5">
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Accuracy (ACC)</p>
+                    <p class="text-2xl font-black text-emerald-400 mt-1.5" id="m-acc">--</p>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 leading-tight">Percentage of top matches aligning with your skill profile[cite: 17, 20].</p>
+            </div>
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">ROC-AUC</p>
+                    <p class="text-2xl font-black text-indigo-300 mt-1.5" id="m-auc">--</p>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 leading-tight">Ability to distinguish between matching and non-matching careers[cite: 17, 20].</p>
+            </div>
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">F1 Score</p>
+                    <p class="text-2xl font-black text-cyan-300 mt-1.5" id="m-f1">--</p>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 leading-tight">Harmonic balance of recommendation precision and coverage[cite: 20, 22].</p>
+            </div>
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">NDCG</p>
+                    <p class="text-2xl font-black text-amber-300 mt-1.5" id="m-ndcg">--</p>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 leading-tight">Ranking quality placing highest affinity roles at Rank 1[cite: 20, 22].</p>
+            </div>
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Precision</p>
+                    <p class="text-2xl font-black text-pink-300 mt-1.5" id="m-prec">--</p>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 leading-tight">Proportion of recommended skills relevant to target positions[cite: 22].</p>
+            </div>
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Recall</p>
+                    <p class="text-2xl font-black text-purple-300 mt-1.5" id="m-rec">--</p>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 leading-tight">Proportion of industry requirements successfully detected[cite: 22].</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
