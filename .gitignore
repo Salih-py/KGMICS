@@ -1,0 +1,17 @@
+venv/
+.venv/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+
+# SQLite Database & Caches
+*.db
+*.sqlite3
+
+# OS / Editor
+.vscode/
+.DS_Store
