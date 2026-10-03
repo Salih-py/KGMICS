@@ -5,7 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from data.courses import COLLEGE_COURSES
 from services.kgimcs_engine import run_kgimcs_recommendation
 from init_db import init_database
-
+from urllib.parse import quote_plus
+from data.indian_jobs import INDIAN_JOB_POSTINGS
 app = Flask(__name__)
 app.secret_key = "super_secret_local_key_kgimcs_portal"
 
@@ -189,9 +190,46 @@ def suggest_career():
 def jobs_page():
     if 'user_id' not in session:
         return redirect(url_for('signin'))
-    target_query = request.args.get('q', '').strip()
-    return render_template('jobs/index.html', query=target_query)
 
+    conn = get_db_connection()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    conn.close()
+
+    target_query = request.args.get('q', '').strip()
+    selected_domain = request.args.get('domain', '').strip()
+
+    filtered_jobs = []
+
+    for job in INDIAN_JOB_POSTINGS:
+        matches_query = True
+        if target_query:
+            query_lower = target_query.lower()
+            text_pool = f"{job['title']} {job['company']} {' '.join(job['skills'])} {job['domain']}".lower()
+            matches_query = query_lower in text_pool
+
+        matches_domain = True
+        if selected_domain:
+            matches_domain = job['domain'] == selected_domain
+
+        if matches_query and matches_domain:
+            # Official Ministry of Labour & Employment NCS Job Search endpoint
+            ncs_url = f"https://www.ncs.gov.in/job-listing?k={quote_plus(job['ncs_keyword'])}&l=India"
+            
+            job_copy = dict(job)
+            job_copy['ncs_url'] = ncs_url
+            filtered_jobs.append(job_copy)
+
+    all_domains = sorted(list(set(j['domain'] for j in INDIAN_JOB_POSTINGS)))
+
+    return render_template(
+        'jobs/index.html',
+        user=user,
+        jobs=filtered_jobs,
+        query=target_query,
+        selected_domain=selected_domain,
+        domains=all_domains,
+        total_count=len(filtered_jobs)
+    )
 @app.route('/resume')
 def resume_page():
     if 'user_id' not in session:
