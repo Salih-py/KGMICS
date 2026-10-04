@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Resume Builder — KGIMCS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resume.css') }}">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col h-screen overflow-hidden">
+
+    <!-- NAVBAR -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/dashboard" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-600/20">K</div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-extrabold text-slate-900 tracking-tight text-base">KGIMCS</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">ai</span>
+                        </div>
+                        <p class="text-[10px] font-medium text-slate-400 -mt-0.5">Agentic Resume Copilot</p>
+                    </div>
+                </a>
+            </div>
+            <nav class="flex items-center gap-3 sm:gap-6">
+                <a href="/dashboard" class="text-xs sm:text-sm font-semibold text-slate-600 hover:text-indigo-600 transition">Dashboard</a>
+                <a href="/jobs" class="text-xs sm:text-sm font-semibold text-slate-600 hover:text-indigo-600 transition">Job Openings</a>
+                <a href="/resume" class="text-xs sm:text-sm font-bold text-indigo-600 border-b-2 border-indigo-600 pb-1">ATS Resume</a>
+                <div class="w-8 h-8 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center text-xs font-black text-indigo-700">
+                    {{ user.full_name[:2].upper() }}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- STEPPER NAVIGATION -->
+    <div class="bg-white border-b border-slate-200 shadow-sm shrink-0">
+        <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4">
+            <div class="flex items-center justify-between relative">
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -z-10 -translate-y-1/2 rounded-full"></div>
+                <div id="progress-bar" class="absolute top-1/2 left-0 h-1 bg-indigo-600 -z-10 -translate-y-1/2 rounded-full transition-all duration-500" style="width: 0%;"></div>
+
+                <div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" onclick="goToStep(1)">
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shadow-md text-xs sm:text-sm ring-4 ring-white" id="indicator-1">1</div>
+                    <span class="text-[10px] sm:text-xs font-bold text-indigo-700">Template</span>
+                </div>
+                <div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" onclick="goToStep(2)">
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-slate-200 text-slate-500 font-bold flex items-center justify-center text-xs sm:text-sm ring-4 ring-white" id="indicator-2">2</div>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-400">Content</span>
+                </div>
+                <div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" onclick="goToStep(3)">
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-slate-200 text-slate-500 font-bold flex items-center justify-center text-xs sm:text-sm ring-4 ring-white" id="indicator-3">3</div>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-400">AI Review</span>
+                </div>
+                <div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" onclick="goToStep(4)">
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-slate-200 text-slate-500 font-bold flex items-center justify-center text-xs sm:text-sm ring-4 ring-white" id="indicator-4">4</div>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-400">Export</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 w-full overflow-hidden flex">
+        
+        <!-- ========================================== -->
+        <!-- STEP 1: TEMPLATE SELECTION -->
+        <!-- ========================================== -->
+        <div id="step-1" class="step-container active w-full overflow-y-auto px-4 py-8 bg-slate-50">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-black tracking-tight text-slate-900">Select an ATS-Optimized Template</h1>
+                <p class="text-sm text-slate-500 mt-2">Choose from 10 architectures. You can fully customize fonts, colors, and layouts in the next step.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto pb-12">
+                {% for tpl in templates %}
+                <div class="group cursor-pointer template-card relative flex flex-col" data-template="{{ tpl.id }}">
+                    <div class="thumbnail-wrapper border-2 border-slate-200 rounded-2xl shadow-sm group-hover:border-indigo-600 group-hover:shadow-xl transition-all relative">
+                        <div class="thumbnail-content a4-blueprint {{ tpl.id }}">
+                            <div class="cv-header">
+                                <div class="cv-name">{{ user.full_name }}</div>
+                                <div class="cv-contact">{{ user.email }} | +91 XXXXX XXXXX | LinkedIn</div>
+                            </div>
+                            <div class="cv-section">
+                                <div class="cv-section-title">Professional Summary</div>
+                                <div class="cv-item-desc" style="list-style: none; margin-left: 0 !important;">Highly motivated professional seeking to leverage technical expertise to drive impactful results.</div>
+                            </div>
+                            <div class="cv-section">
+                                <div class="cv-section-title">Education</div>
+                                <div class="cv-item">
+                                    <div class="cv-item-header">
+                                        <div class="cv-item-title">{{ user.course_name }}</div>
+                                        <div class="cv-item-meta">{{ user.passout_year }}</div>
+                                    </div>
+                                    <div class="cv-item-desc" style="list-style: none; margin-left: 0 !important;">University / College Name</div>
+                                </div>
+                            </div>
+                            <div class="cv-section">
+                                <div class="cv-section-title">Experience & Projects</div>
+                                <div class="cv-item">
+                                    <div class="cv-item-header">
+                                        <div class="cv-item-title">Capstone Research Project</div>
+                                        <div class="cv-item-meta">2025 - Present</div>
+                                    </div>
+                                    <div class="cv-item-desc">Engineered a robust model improving efficiency by 15%.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 bg-indigo-900/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none rounded-2xl z-10">
+                            <span class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">Customize Template</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h3 class="font-black text-slate-800 text-base">{{ tpl.name }}</h3>
+                        <p class="text-xs text-slate-500 mt-1 px-4 leading-relaxed">{{ tpl.desc }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STEP 2: MODULAR BLOCK EDITOR (FlowCV Style)-->
+        <!-- ========================================== -->
+        <div id="step-2" class="step-container w-full h-full bg-slate-100">
+            <div class="flex flex-col lg:flex-row h-full">
+                
+                <!-- LEFT PANE: CONTROLS -->
+                <div class="w-full lg:w-[450px] bg-white border-r border-slate-200 flex flex-col h-full shadow-xl z-10 shrink-0">
+                    
+                    <!-- Tabs -->
+                    <div class="flex border-b border-slate-200 shrink-0">
+                        <button class="flex-1 py-3 text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 bg-white transition" id="tab-btn-content" onclick="switchTab('content')">✍️ Content</button>
+                        <button class="flex-1 py-3 text-xs font-bold text-slate-500 bg-slate-50 border-b border-slate-200 transition hover:text-indigo-600" id="tab-btn-design" onclick="switchTab('design')">🎨 Customize</button>
+                    </div>
+                    
+                    <!-- TAB 1: CONTENT EDITOR -->
+                    <div id="tab-content" class="flex-1 overflow-y-auto p-5 pb-20 relative">
+                        
+                        <!-- Personal Info Fixed Block -->
+                        <div class="mb-6 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                            <div class="bg-slate-50 p-3 flex justify-between items-center border-b border-slate-200">
+                                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-tight">Personal Details</h3>
+                                <!-- Save Status Indicator -->
+                                <span id="save-status" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded hidden"></span>
+                            </div>
+                            <div class="p-4 space-y-4">
+                                <div><label class="text-[10px] font-bold text-slate-600 uppercase mb-1 block">Full Name</label><input type="text" id="inp-name" oninput="updateState('personal.name', this.value)" class="w-full p-2.5 text-sm font-bold border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></div>
+                                <div><label class="text-[10px] font-bold text-slate-600 uppercase mb-1 block">Contact & Links</label><input type="text" id="inp-contact" oninput="updateState('personal.contact', this.value)" class="w-full p-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></div>
+                            </div>
+                        </div>
+
+                        <!-- JavaScript Injects Dynamic Sections Here -->
+                        <div id="editor-sections"></div>
+                        
+                        <!-- The Magic Add Content Button -->
+                        <button onclick="openAddSectionModal()" class="w-full py-4 border-2 border-dashed border-indigo-300 text-indigo-600 font-bold rounded-xl bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-400 transition flex items-center justify-center gap-2 mt-2 shadow-sm">
+                            <span class="text-lg leading-none">+</span> <span>Add Content Section</span>
+                        </button>
+                    </div>
+
+                    <!-- TAB 2: DEEP CUSTOMIZATION -->
+                    <div id="tab-design" class="hidden flex-1 overflow-y-auto p-5 pb-20 bg-slate-50 space-y-6">
+                        
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider mb-4">Headings & Layout</h3>
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-600 block mb-1 uppercase">Header Alignment</label>
+                                    <select id="design-align" onchange="updateState('design.align', this.value)" class="w-full p-2.5 text-sm font-semibold border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-slate-50">
+                                        <option value="left">Left Aligned</option>
+                                        <option value="center">Center Aligned</option>
+                                        <option value="right">Right Aligned</option>
+                                    </select>
+                                </div>
+                                <div class="flex gap-3">
+                                    <div class="w-1/2">
+                                        <label class="text-[10px] font-bold text-slate-600 block mb-1 uppercase">Divider Style</label>
+                                        <select id="design-lineStyle" onchange="updateState('design.lineStyle', this.value)" class="w-full p-2.5 text-sm font-semibold border border-slate-300 rounded-lg focus:ring-2 bg-slate-50">
+                                            <option value="solid">Solid Line</option>
+                                            <option value="dashed">Dashed Line</option>
+                                            <option value="dotted">Dotted Line</option>
+                                            <option value="none">Hidden</option>
+                                        </select>
+                                    </div>
+                                    <div class="w-1/2">
+                                        <label class="text-[10px] font-bold text-slate-600 block mb-1 uppercase">Thickness</label>
+                                        <select id="design-lineThickness" onchange="updateState('design.lineThickness', this.value)" class="w-full p-2.5 text-sm font-semibold border border-slate-300 rounded-lg focus:ring-2 bg-slate-50">
+                                            <option value="1">1px (Thin)</option>
+                                            <option value="2">2px (Standard)</option>
+                                            <option value="4">4px (Bold)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider mb-4">Typography & Color</h3>
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-600 block mb-1 uppercase">Font Family</label>
+                                    <select id="design-font" onchange="updateState('design.font', this.value)" class="w-full p-2.5 text-sm font-semibold border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-slate-50">
+                                        <option value="'Arial', sans-serif">Arial (Clean Sans)</option>
+                                        <option value="'Helvetica', sans-serif">Helvetica (Modern Sans)</option>
+                                        <option value="'Times New Roman', serif">Times New Roman (Classic Serif)</option>
+                                        <option value="'Georgia', serif">Georgia (Modern Serif)</option>
+                                        <option value="'Courier New', monospace">Courier (Tech Mono)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <label class="text-[10px] font-bold text-slate-600 uppercase">Base Font Size</label>
+                                        <span class="text-[10px] font-bold text-indigo-600" id="val-size">10pt</span>
+                                    </div>
+                                    <input type="range" id="design-size" min="8" max="14" step="0.5" oninput="document.getElementById('val-size').innerText=this.value+'pt'; updateState('design.size', this.value)" class="w-full accent-indigo-600">
+                                </div>
+                                <div class="flex items-center justify-between border-t border-slate-100 pt-5 mt-3">
+                                    <label class="text-sm font-bold text-slate-800">Global Accent Color</label>
+                                    <input type="color" id="design-color" onchange="updateState('design.color', this.value)" class="w-10 h-10 rounded cursor-pointer border-2 border-slate-200 p-0 shadow-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="p-4 border-t border-slate-200 bg-white flex justify-between items-center shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
+                        <button onclick="goToStep(1)" class="text-xs font-bold text-slate-500 hover:text-indigo-600 px-3 py-2 transition">← Templates</button>
+                        <button onclick="goToStep(3)" class="text-xs font-bold bg-indigo-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-indigo-700 transition transform hover:-translate-y-0.5">Next: AI Review →</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT PANE: LIVE A4 PREVIEW -->
+                <div class="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center items-start bg-slate-200/80">
+                    <!-- The Javascript renderA4() function draws the document here -->
+                    <div id="live-a4-canvas" class="shadow-2xl"></div> 
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STEP 3: AGENTIC AI REVIEWER & ATS SCORE    -->
+        <!-- ========================================== -->
+        <div id="step-3" class="step-container w-full h-full bg-slate-100 overflow-y-auto pb-20">
+            <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
+                
+                <!-- LEFT: ATS Score Dial -->
+                <div class="w-full md:w-1/3 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+                        <h2 class="text-sm font-black text-slate-400 uppercase tracking-wider mb-6">ATS Compatibility</h2>
+                        <div id="ats-score-circle" class="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-3xl font-black text-slate-400 mx-auto shadow-inner transition-colors duration-500">
+                            --
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-4">Target Score: 80+</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-sm font-black text-slate-800 mb-4">Diagnostic Feedback</h2>
+                        <div id="ats-feedback-list" class="space-y-2">
+                            <!-- Feedback injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: AI Copilot Improver -->
+                <div class="w-full md:w-2/3">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                            <div>
+                                <h2 class="text-xl font-black text-slate-800">✨ AI Copilot Editor</h2>
+                                <p class="text-xs text-slate-500 mt-1">Select a bullet point below to rewrite it using the XYZ impact formula.</p>
+                            </div>
+                        </div>
+
+                        <div id="ai-improver-list" class="space-y-4">
+                            <!-- Bullet points injected here by JS -->
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Step Navigation Footer -->
+            <div class="max-w-5xl mx-auto px-4 mt-6 flex justify-between items-center">
+                <button onclick="goToStep(2)" class="text-sm font-bold text-slate-500 hover:text-indigo-600 transition">← Back to Editor</button>
+                <button onclick="goToStep(4)" class="text-sm font-bold bg-indigo-600 text-white px-8 py-3 rounded-xl shadow-md hover:bg-indigo-700 transition">Next: Generate PDF →</button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STEP 4: VECTOR PDF EXPORT & FINAL PREVIEW  -->
+        <!-- ========================================== -->
+        <div id="step-4" class="step-container w-full h-full bg-slate-100 overflow-y-auto pb-20">
+            <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 items-start">
+                
+                <!-- Left: Controls & Tips -->
+                <div class="w-full lg:w-1/3 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-800 tracking-tight mb-2">Ready to Download!</h2>
+                        <p class="text-xs text-slate-500 mb-6">Review your final ATS resume preview on the right before exporting.</p>
+
+                        <button onclick="downloadPDF()" class="w-full bg-indigo-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-md hover:bg-indigo-700 transition flex items-center justify-center gap-2 mb-4">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download Vector PDF
+                        </button>
+
+                        <button onclick="goToStep(2)" class="w-full text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 py-2.5 rounded-xl border border-slate-200 transition">
+                            ✏️ Edit Content Further
+                        </button>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-900 space-y-1.5">
+                        <p class="font-bold flex items-center gap-1.5">💡 Print Dialog Settings:</p>
+                        <ul class="list-disc list-inside space-y-1 text-[11px] text-amber-800">
+                            <li>Set Destination to <strong>Save as PDF</strong></li>
+                            <li>Set Margins to <strong>None</strong></li>
+                            <li>Check <strong>Background graphics</strong></li>
+                        </ul>
+                    </div>
+
+                    <button onclick="goToStep(3)" class="text-xs font-bold text-slate-500 hover:text-indigo-600 flex items-center gap-1">
+                        ← Back to AI Review
+                    </button>
+                </div>
+
+                <!-- Right: Final Live Rendered Document View -->
+                <div class="w-full lg:w-2/3 bg-slate-200/70 p-6 rounded-2xl border border-slate-300/80 overflow-hidden flex justify-center">
+                    <div id="export-a4-preview" class="w-full flex justify-center"></div>
+                </div>
+
+            </div>
+        </div>
+    <!-- ========================================== -->
+    <!-- MODAL: ADD CONTENT SECTION (FlowCV Grid)   -->
+    <!-- ========================================== -->
+    <div id="modal-add-section" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-black text-slate-800 text-lg">Add Content Block</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-red-500 text-2xl font-bold leading-none">&times;</button>
+            </div>
+            <div class="p-6 grid grid-cols-2 gap-4 bg-white">
+                <button onclick="addSection('text', 'Professional Summary')" class="p-4 border-2 border-slate-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md text-left transition group">
+                    <span class="block font-black text-sm text-slate-800 mb-1 group-hover:text-indigo-700">📝 Summary</span>
+                    <span class="text-[10px] font-semibold text-slate-500 block leading-tight">Text block for bio or profile.</span>
+                </button>
+                <button onclick="addSection('text', 'Core Skills')" class="p-4 border-2 border-slate-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md text-left transition group">
+                    <span class="block font-black text-sm text-slate-800 mb-1 group-hover:text-indigo-700">⚙️ Skills</span>
+                    <span class="text-[10px] font-semibold text-slate-500 block leading-tight">Comma-separated keyword list.</span>
+                </button>
+                <button onclick="addSection('list', 'Education')" class="p-4 border-2 border-slate-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md text-left transition group">
+                    <span class="block font-black text-sm text-slate-800 mb-1 group-hover:text-indigo-700">🎓 Education</span>
+                    <span class="text-[10px] font-semibold text-slate-500 block leading-tight">Degrees, schools, and dates.</span>
+                </button>
+                <button onclick="addSection('list', 'Experience')" class="p-4 border-2 border-slate-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md text-left transition group">
+                    <span class="block font-black text-sm text-slate-800 mb-1 group-hover:text-indigo-700">💼 Experience</span>
+                    <span class="text-[10px] font-semibold text-slate-500 block leading-tight">Jobs with bullet point details.</span>
+                </button>
+                <button onclick="addSection('list', 'Projects')" class="p-4 border-2 border-slate-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md text-left transition group">
+                    <span class="block font-black text-sm text-slate-800 mb-1 group-hover:text-indigo-700">🚀 Projects</span>
+                    <span class="text-[10px] font-semibold text-slate-500 block leading-tight">Academic or technical work.</span>
+                </button>
+                <button onclick="addSection('list', 'Hobbies & Interests')" class="p-4 border-2 border-slate-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md text-left transition group">
+                    <span class="block font-black text-sm text-slate-800 mb-1 group-hover:text-indigo-700">🎨 Custom List</span>
+                    <span class="text-[10px] font-semibold text-slate-500 block leading-tight">Create any custom list section.</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECURE PYTHON-TO-JAVASCRIPT DATA BRIDGE    -->
+    <!-- ========================================== -->
+    <!-- We safely convert the Python dictionary 'saved_resume' to a JSON string -->
+    <script id="init-data" type="application/json">{{ saved_resume | tojson | safe }}</script>
+    
+    <!-- Link the Modular Engine -->
+    <script src="{{ url_for('static', filename='js/resume.js') }}"></script>
+
+</body>
+</html>

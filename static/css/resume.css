@@ -1,0 +1,176 @@
+/* Core Step Navigation */
+.step-container { display: none; }
+.step-container.active { display: block; animation: fadeIn 0.25s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ========================================================
+   BASE A4 BLUEPRINT (Production Layout Standards)
+======================================================== */
+.a4-blueprint {
+    --cv-theme-color: #0f172a;
+    --cv-font-base: 'Arial', sans-serif;
+    --cv-text-size: 9.5pt;
+    --cv-line-style: solid;
+    --cv-line-thickness: 1px;
+    --cv-header-align: left;
+    
+    width: 210mm;
+    min-height: 297mm;
+    background: #ffffff;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    box-sizing: border-box;
+    font-family: var(--cv-font-base);
+    font-size: var(--cv-text-size);
+    line-height: 1.45;
+    color: #1e293b;
+    padding: 18mm 20mm; /* Standard ATS margin */
+}
+
+/* Thumbnail Grid View Scaling */
+.thumbnail-wrapper { width: 100%; aspect-ratio: 1 / 1.3; background: #fff; overflow: hidden; padding: 12px; box-sizing: border-box; }
+.thumbnail-content { width: 100%; height: 100%; pointer-events: none; }
+.thumbnail-content.a4-blueprint { font-size: 6.5px !important; line-height: 1.25 !important; padding: 6px !important; box-shadow: none !important; width: 100% !important; min-height: auto !important; }
+.thumbnail-content .cv-name { font-size: 11px !important; }
+.thumbnail-content .cv-contact { font-size: 6px !important; }
+.thumbnail-content .cv-section-title { font-size: 7.5px !important; margin-top: 6px !important; margin-bottom: 2px !important; }
+.thumbnail-content .cv-item { margin-bottom: 3px !important; }
+.thumbnail-content .cv-item-title { font-size: 7px !important; }
+.thumbnail-content .cv-item-meta { font-size: 6px !important; }
+.thumbnail-content .cv-item-desc { font-size: 6px !important; }
+
+/* ========================================================
+   10 ATS TEMPLATES (Strict Typographic Rules)
+======================================================== */
+
+/* 1. Harvard Classic */
+.tpl-harvard { font-family: 'Times New Roman', serif; color: #000; }
+.tpl-harvard .cv-header { text-align: center; border-bottom: 1.5px solid #000; padding-bottom: 8px; margin-bottom: 14px; }
+.tpl-harvard .cv-name { font-size: 20pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; color: #000; }
+.tpl-harvard .cv-contact { font-size: 9pt; color: #222; margin-top: 3px; }
+.tpl-harvard .cv-section-title { font-size: 10.5pt; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 2px; margin-top: 14px; margin-bottom: 6px; }
+
+/* 2. Tech Minimalist */
+.tpl-modern { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+.tpl-modern .cv-header { text-align: left; border-bottom: var(--cv-line-thickness) var(--cv-line-style) var(--cv-theme-color); padding-bottom: 10px; margin-bottom: 14px; }
+.tpl-modern .cv-name { font-size: 22pt; font-weight: 800; color: var(--cv-theme-color); letter-spacing: -0.5px; }
+.tpl-modern .cv-contact { font-size: 8.5pt; color: #64748b; margin-top: 3px; }
+.tpl-modern .cv-section-title { font-size: 10pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--cv-theme-color); margin-top: 12px; margin-bottom: 6px; }
+
+/* 3. Executive Corporate */
+.tpl-corporate { font-family: 'Georgia', serif; }
+.tpl-corporate .cv-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--cv-theme-color); padding-bottom: 8px; margin-bottom: 14px; }
+.tpl-corporate .cv-name { font-size: 20pt; font-weight: bold; color: #0f172a; }
+.tpl-corporate .cv-contact { font-size: 8.5pt; text-align: right; color: #475569; }
+.tpl-corporate .cv-section-title { font-size: 10pt; font-weight: bold; text-transform: uppercase; background: #f8fafc; border-left: 3px solid var(--cv-theme-color); padding: 3px 6px; margin-top: 12px; margin-bottom: 6px; }
+
+/* 4. Modern Startup */
+.tpl-startup { font-family: 'Helvetica', Arial, sans-serif; }
+.tpl-startup .cv-header { text-align: center; margin-bottom: 16px; }
+.tpl-startup .cv-name { font-size: 22pt; font-weight: 800; color: #0f172a; }
+.tpl-startup .cv-contact { font-size: 8.5pt; color: var(--cv-theme-color); font-weight: 600; margin-top: 3px; }
+.tpl-startup .cv-section-title { font-size: 10pt; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid var(--cv-theme-color); display: inline-block; padding-bottom: 1px; margin-top: 12px; margin-bottom: 6px; }
+
+/* 5. Academic Researcher */
+.tpl-academic { font-family: 'Times New Roman', serif; }
+.tpl-academic .cv-header { text-align: left; border-bottom: 1px solid #111; padding-bottom: 6px; margin-bottom: 12px; }
+.tpl-academic .cv-name { font-size: 18pt; font-weight: bold; color: #000; }
+.tpl-academic .cv-contact { font-size: 8.5pt; color: #444; }
+.tpl-academic .cv-section-title { font-size: 10pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; margin-top: 12px; margin-bottom: 6px; }
+
+/* 6. Engineering Standard */
+.tpl-engineering { font-family: 'Courier New', Courier, monospace; }
+.tpl-engineering .cv-header { border: 1px solid var(--cv-theme-color); padding: 8px 12px; margin-bottom: 14px; background: #f8fafc; }
+.tpl-engineering .cv-name { font-size: 17pt; font-weight: bold; color: #0f172a; }
+.tpl-engineering .cv-contact { font-size: 8pt; color: #475569; }
+.tpl-engineering .cv-section-title { font-size: 9.5pt; font-weight: bold; border-bottom: 1px dashed var(--cv-theme-color); margin-top: 12px; margin-bottom: 6px; color: var(--cv-theme-color); }
+
+/* 7. Creative Professional */
+.tpl-creative { font-family: 'Arial', sans-serif; border-left: 5px solid var(--cv-theme-color); padding-left: 18mm; }
+.tpl-creative .cv-header { margin-bottom: 14px; }
+.tpl-creative .cv-name { font-size: 22pt; font-weight: 900; color: #0f172a; }
+.tpl-creative .cv-contact { font-size: 8.5pt; color: #64748b; }
+.tpl-creative .cv-section-title { font-size: 10pt; font-weight: 800; text-transform: uppercase; color: var(--cv-theme-color); margin-top: 12px; margin-bottom: 6px; }
+
+/* 8. Finance Quant */
+.tpl-quant { font-family: 'Arial', sans-serif; font-size: 9pt; }
+.tpl-quant .cv-header { display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; }
+.tpl-quant .cv-name { font-size: 15pt; font-weight: bold; color: #000; }
+.tpl-quant .cv-contact { font-size: 8pt; color: #333; }
+.tpl-quant .cv-section-title { font-size: 9pt; font-weight: bold; text-transform: uppercase; background: #f1f5f9; padding: 2px 5px; margin-top: 10px; margin-bottom: 4px; }
+
+/* 9. Elegant Serif */
+.tpl-elegance { font-family: 'Georgia', serif; }
+.tpl-elegance .cv-header { text-align: center; margin-bottom: 16px; }
+.tpl-elegance .cv-name { font-size: 20pt; letter-spacing: 1px; color: var(--cv-theme-color); }
+.tpl-elegance .cv-contact { font-size: 8.5pt; color: #64748b; margin-top: 3px; }
+.tpl-elegance .cv-section-title { font-size: 9.5pt; font-style: italic; text-align: center; border-bottom: 1px dotted #cbd5e1; padding-bottom: 2px; margin-top: 14px; margin-bottom: 6px; color: #475569; }
+
+/* 10. Apex Bold */
+.tpl-apex { padding: 0; font-family: 'Arial', sans-serif; }
+.tpl-apex .cv-header { background: var(--cv-theme-color); color: #fff; padding: 18mm 20mm 12mm 20mm; margin-bottom: 14px; }
+.tpl-apex .cv-name { font-size: 22pt; font-weight: 900; color: #fff; }
+.tpl-apex .cv-contact { font-size: 8.5pt; color: rgba(255,255,255,0.9); margin-top: 3px; }
+.tpl-apex .cv-section { padding: 0 20mm; }
+.tpl-apex .cv-section-title { font-size: 10pt; font-weight: 900; text-transform: uppercase; color: var(--cv-theme-color); margin-top: 12px; margin-bottom: 6px; }
+
+/* ========================================================
+   UNIVERSAL ALIGNMENT RULES (Flex Date Rows & Clean Lists)
+======================================================== */
+.cv-section { margin-bottom: 10px; }
+.cv-item { margin-bottom: 8px; }
+
+/* Header row locks Title left and Date/Location flush right */
+.cv-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+}
+.cv-item-title {
+    font-weight: 700;
+    font-size: 9.5pt;
+    color: #0f172a;
+}
+.cv-item-meta {
+    font-size: 8.5pt;
+    font-weight: 600;
+    color: #64748b;
+    white-space: nowrap;
+    text-align: right;
+    margin-left: 16px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Bullet list formatting */
+.cv-item-desc {
+    font-size: 9pt;
+    color: #334155;
+    margin-top: 2px;
+}
+.cv-item-desc ul {
+    margin: 2px 0 0 16px;
+    padding: 0;
+    list-style-type: disc;
+}
+.cv-item-desc li {
+    margin-bottom: 2px;
+    padding-left: 2px;
+}
+
+/* Print/Export Styles */
+@media print {
+    body * { visibility: hidden; }
+    #live-a4-canvas, #live-a4-canvas * { visibility: visible; }
+    #live-a4-canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0 !important;
+        box-shadow: none !important;
+        width: 210mm !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    @page { size: A4 portrait; margin: 0; }
+}

@@ -25,9 +25,43 @@
             </button>
         </form>
 
-        <p class="text-center text-xs text-slate-500 mt-5">
-            Don't have an account? <a href="{{ url_for('signup') }}" class="text-indigo-600 font-semibold hover:underline">Sign Up here</a>
-        </p>
+        <!-- FOOTER LINKS -->
+        <div class="mt-6 pt-4 border-t border-slate-100 text-center space-y-2">
+            <p class="text-xs text-slate-500">
+                Don't have an account? <a href="{{ url_for('signup') }}" class="text-indigo-600 font-semibold hover:underline">Sign Up here</a>
+            </p>
+            <p>
+                <button type="button" onclick="openForgotPwModal()" class="text-[11px] text-slate-400 hover:text-indigo-600 font-medium transition">
+                    Forgot your password?
+                </button>
+            </p>
+        </div>
     </div>
 </div>
+
+<!-- DEMO FORGOT PASSWORD MODAL -->
+<div id="forgot-pw-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl border border-slate-100 text-center">
+        <div class="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+            🔑
+        </div>
+        <h3 class="text-base font-bold text-slate-800 mb-1.5">Password Recovery</h3>
+        <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+            In production, a time-limited token is sent via email relay (SMTP). For this evaluation demo, accounts can be managed via the local SQLite console or recreated on the registration page.
+        </p>
+        <button type="button" onclick="closeForgotPwModal()"
+            class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold text-xs transition">
+            Close
+        </button>
+    </div>
+</div>
+
+<script>
+    function openForgotPwModal() {
+        document.getElementById('forgot-pw-modal').classList.remove('hidden');
+    }
+    function closeForgotPwModal() {
+        document.getElementById('forgot-pw-modal').classList.add('hidden');
+    }
+</script>
 {% endblock %}

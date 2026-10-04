@@ -1,16 +1,30 @@
 import sqlite3
 import json
+import os
+import re
+import requests
+from urllib.parse import quote_plus
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
 from data.courses import COLLEGE_COURSES
+from data.indian_jobs import INDIAN_JOB_POSTINGS
 from services.kgimcs_engine import run_kgimcs_recommendation
 from init_db import init_database
-from urllib.parse import quote_plus
-from data.indian_jobs import INDIAN_JOB_POSTINGS
+
+from services.resume_service import (
+    RESUME_TEMPLATES, 
+    build_default_resume_state, 
+    process_bullet_improvement
+)
+# Load environment variables (for Groq API key if available)
+load_dotenv()
+
 app = Flask(__name__)
 app.secret_key = "super_secret_local_key_kgimcs_portal"
 
-# Ensure all SQLite tables exist on startup
+# Ensure all SQLite tables and columns exist on startup
 init_database()
 
 def get_db_connection():
@@ -118,7 +132,6 @@ def dashboard():
     profile = conn.execute('SELECT * FROM student_profiles WHERE user_id = ?', (session['user_id'],)).fetchone()
     conn.close()
 
-    # Pass recs=None so the initial dashboard view is clean
     return render_template('dashboard/index.html', user=user, profile=profile, recs=None)
 
 @app.route('/api/suggest_career', methods=['POST'])
@@ -129,7 +142,6 @@ def suggest_career():
     data = request.get_json() or {}
     bio_text = data.get('bio_text', '').strip()
 
-    # Reject completely empty or meaningless bios before processing
     if len(bio_text.split()) < 5:
         return jsonify({
             "status": "error", 
@@ -139,14 +151,12 @@ def suggest_career():
     conn = get_db_connection()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
 
-    # Run the KGIMCS Recommender Engine
     engine_output = run_kgimcs_recommendation(
         registered_course_name=user['course_name'],
         bio_text=bio_text,
         interested_career=user['interested_career']
     )
     
-    # If the NLP engine found the text too messy/unrelated to academic skills
     if engine_output.get("is_low_signal"):
         conn.close()
         return jsonify({
@@ -157,9 +167,8 @@ def suggest_career():
     recommendations = engine_output['recommendations']
     metrics = engine_output['metrics']
     extracted_skills = engine_output['extracted_skills']
-    novel_skills = engine_output.get('novel_skills', []) # NEW: Get out-of-mapping skills
+    novel_skills = engine_output.get('novel_skills', [])
 
-    # Persist BOTH extracted and novel skills to SQLite
     cursor = conn.cursor()
     combined_skills = extracted_skills + novel_skills
     cursor.execute('''
@@ -183,7 +192,7 @@ def suggest_career():
         "recommendations": recommendations,
         "metrics": metrics,
         "extracted_skills": extracted_skills,
-        "novel_skills": novel_skills # Send to JS
+        "novel_skills": novel_skills
     })
 
 @app.route('/jobs')
@@ -212,9 +221,7 @@ def jobs_page():
             matches_domain = job['domain'] == selected_domain
 
         if matches_query and matches_domain:
-            # Official Ministry of Labour & Employment NCS Job Search endpoint
             ncs_url = f"https://www.ncs.gov.in/job-listing?k={quote_plus(job['ncs_keyword'])}&l=India"
-            
             job_copy = dict(job)
             job_copy['ncs_url'] = ncs_url
             filtered_jobs.append(job_copy)
@@ -230,15 +237,87 @@ def jobs_page():
         domains=all_domains,
         total_count=len(filtered_jobs)
     )
+
+# ==========================================
+# ATS RESUME BUILDER MODULE
+# ==========================================
+
 @app.route('/resume')
 def resume_page():
     if 'user_id' not in session:
         return redirect(url_for('signin'))
+
     conn = get_db_connection()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     profile = conn.execute('SELECT * FROM student_profiles WHERE user_id = ?', (session['user_id'],)).fetchone()
+    top_rec = conn.execute('SELECT career_title FROM career_recommendations WHERE user_id = ? ORDER BY match_score DESC LIMIT 1', (session['user_id'],)).fetchone()
     conn.close()
-    return render_template('resume/index.html', user=user, profile=profile)
+
+    nlp_skills = []
+    if profile and profile['extracted_skills']:
+        try:
+            nlp_skills = json.loads(profile['extracted_skills'])
+        except Exception:
+            nlp_skills = []
+
+    saved_resume = None
+    if profile and 'resume_data' in profile.keys() and profile['resume_data']:
+        try:
+            saved_resume = json.loads(profile['resume_data'])
+        except Exception:
+            saved_resume = None
+
+    if not saved_resume:
+        saved_resume = build_default_resume_state(user, nlp_skills)
+
+    target_career = top_rec['career_title'] if top_rec else (user['interested_career'] or 'Target Professional')
+
+    return render_template(
+        'resume/index.html',
+        user=user,
+        profile=profile,
+        nlp_skills=nlp_skills,
+        saved_resume=saved_resume,
+        target_career=target_career,
+        templates=RESUME_TEMPLATES
+    )
+
+@app.route('/api/resume/save', methods=['POST'])
+def save_resume():
+    if 'user_id' not in session:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    resume_data = data.get('resume_data')
+
+    if not resume_data:
+        return jsonify({"status": "error", "message": "No data provided"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO student_profiles (user_id, resume_data)
+        VALUES (?, ?)
+        ON CONFLICT(user_id) DO UPDATE SET resume_data=excluded.resume_data
+    ''', (session['user_id'], json.dumps(resume_data)))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"status": "success", "message": "Draft auto-saved successfully"})
+
+@app.route('/api/resume/improve', methods=['POST'])
+def improve_bullet():
+    data = request.get_json() or {}
+    text = data.get('text', '').strip()
+    section_title = data.get('section_title', 'Experience')
+    entry_title = data.get('entry_title', 'General')
+    target_role = data.get('target_role', '')
+
+    if not text:
+        return jsonify({"status": "error", "message": "No text provided"}), 400
+
+    improved_text, engine = process_bullet_improvement(text, section_title, entry_title, target_role)
+    return jsonify({"status": "success", "improved_text": improved_text, "engine": engine})
 
 @app.route('/logout')
 def logout():
